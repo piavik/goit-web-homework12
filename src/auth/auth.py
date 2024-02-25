@@ -59,7 +59,7 @@ class Auth:
                 email = payload['sub']
                 return email
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid scope for token')
-        except JWTError:
+        except jwt.exceptions.InvalidTokenError:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate credentials')
 
     async def get_current_user(self, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
@@ -78,7 +78,7 @@ class Auth:
                     raise credentials_exception
             else:
                 raise credentials_exception
-        except JWTError as e:
+        except jwt.exceptions.InvalidTokenError as e:
             raise credentials_exception
 
         user = await get_user_by_email(email, db)

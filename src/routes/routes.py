@@ -13,7 +13,10 @@ router = APIRouter(prefix='/contacts')
 
 
 @router.get("/", response_model=List[ContactResponse])
-async def read_contacts(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+async def read_contacts(skip: int = 0, 
+                        limit: int = 100, 
+                        db: Session = Depends(get_db)
+                        ):
     contacts = await actions.get_contacts(skip, limit, db)
     return contacts
 
@@ -56,7 +59,7 @@ async def create_contact(body: ContactModel,
                         db: Session = Depends(get_db), 
                         current_user: UserModel = Depends(auth_service.get_current_user)
                         ):
-    return await actions.create_contact(body, db)
+    return await actions.create_contact(body, db, current_user)
 
 @router.put("/{contact_id}", response_model=ContactResponse)
 async def update_contact(body: ContactModel, 
